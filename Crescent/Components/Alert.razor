@@ -1,0 +1,56 @@
+﻿<div id="#alert" class="
+     @(
+         Type == MessageType.DANGER ? "alert alert-danger" :
+         Type == MessageType.SUCCESS ? "alert alert-success" :
+         "alert alert-info"
+     ) 
+     alert-dismissible 
+     @(IsShowAlert? String.Empty : "d-none")"
+     style=" position: absolute; top: 62px; width:96%; z-index:999;"
+     role="alert">
+    <a hidden="@_IsAutoClose" @onclick="CloseAlert" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    @Message    
+</div>
+
+
+@code {
+
+    public bool IsShowAlert { get; set; } = false;
+
+    public string Message { get; set; }
+
+    public MessageType Type { get; set; }
+
+    private bool _IsAutoClose { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsShowAlert = false;
+        await Task.CompletedTask;
+    }
+
+    private async Task CloseAlert()
+    {
+        IsShowAlert = false;
+        base.StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    public async Task ShowAlert(string message, MessageType type, bool IsAutoClose = true, int time = 3000)
+    {
+        Message = message;
+        IsShowAlert = true;
+        Type = type;
+        _IsAutoClose = IsAutoClose;
+        base.StateHasChanged();
+
+        if (IsAutoClose)
+        {
+            System.Threading.Thread.Sleep(time);
+            IsShowAlert = false;
+            base.StateHasChanged();
+        }
+
+        await Task.CompletedTask;
+    }
+}

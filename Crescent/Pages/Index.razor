@@ -1,0 +1,13 @@
+﻿@page "/"
+
+@inject Services.IAccountService AccountService
+
+<Crescent.Pages.Account.Login />
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+        AuthHelper = new AuthenticationHelper(ProtectedSessionStore, AccountService);
+    }
+}

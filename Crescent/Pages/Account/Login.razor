@@ -1,0 +1,68 @@
+﻿@page "/Login"
+
+@inject Services.IAccountService AccountService;
+
+
+<h3>Login</h3>
+<br />
+<div style="width:250px;">
+    <input @bind="_account.LoginId" type="text" placeholder="Login Id" class="form-control" />
+    <br />
+    <input @bind="_account.Password" type="password" placeholder="Password" class="form-control" />
+    <br />
+    <button @onclick="LoginAction" class="btn btn-primary">Login</button>
+    <button @onclick="GotoRegister" class="btn btn-primary">Register User</button>
+</div>
+
+<Crescent.Components.Alert @ref="_alert" />
+
+@code {
+
+    private Account _account { get; set; }
+
+    private Crescent.Components.Alert _alert { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _account = new Account();
+
+        TopMenuUility.IsHideLoginMenu = false;
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await ProtectedSessionStore.DeleteAsync("Session");        
+    }
+
+    public async Task GotoRegister()
+    {
+        Navigate.NavigateTo("Register");
+        await Task.CompletedTask;
+    }
+
+    public async Task LoginAction()
+    {
+        var response = await AccountService.IsValidLogin(_account);
+        if (response.IsSuccess)
+        {
+            await ProtectedSessionStore.SetAsync("Session",
+                new SessionModel()
+                {
+                    Who = _account.LoginId,
+                    When = DateTime.Now,
+                    Token = response.SuccessMessage,
+
+                });
+            TopMenuUility.IsHideLoginMenu = true;
+            Navigate.NavigateTo("Dashboard");
+        }
+        else
+        {
+            await _alert.ShowAlert("Invalid Login Id or Password", MessageType.DANGER);
+        }
+        base.StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+}

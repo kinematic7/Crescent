@@ -1,0 +1,45 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">   
+    <div class="main">        
+        <div class="top-row px-4">
+            <span style="position:absolute; font-size:17px; left:10px; padding-left:10px;">☾rescent</span>
+            <span hidden="@TopMenuUility.IsHideLoginMenu">
+                <a @onclick="GotoLogin" href="#">Login</a>
+                <a @onclick="GotoRegister" href="#">Register</a>
+            </span>
+            <span hidden="@(!TopMenuUility.IsHideLoginMenu)">
+                <a @onclick="GotoLogout" href="#">Logout</a>                
+            </span>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public async Task GotoLogin()
+    {
+        Navigate.NavigateTo("Login");
+        await Task.CompletedTask;
+    }
+
+    public async Task GotoRegister()
+    {
+        Navigate.NavigateTo("Register");
+        await Task.CompletedTask;
+    }
+
+    public async Task GotoLogout()
+    {
+        await ProtectedSessionStore.DeleteAsync("Session");
+        TopMenuUility.IsHideLoginMenu = false;
+        Navigate.NavigateTo("Login");
+        base.StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+}

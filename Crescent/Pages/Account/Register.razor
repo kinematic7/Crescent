@@ -1,0 +1,73 @@
+﻿@inject Services.IAccountService AccountService;
+
+@page "/Register"
+
+<h3>Register</h3>
+<br />
+<div style="width:250px;">
+    <input type="text" @bind-value="_account.LoginId" placeholder="Login Id" class="form-control" />
+    <br />
+    <input type="password" @bind-value="@_account.Password" placeholder="Password" class="form-control" />
+    <br />
+    <input type="password" placeholder="Confirm Password" class="form-control" />
+    <br />
+    <button @onclick="RegisterOnClick" class="btn btn-primary">Register</button>
+    <button @onclick="GotoLogin" class="btn btn-primary">Back to Login</button>
+</div>
+
+<Crescent.Components.Alert @ref="_alert" />
+
+@code {
+
+    public Account _account { get; set; }
+
+    private Crescent.Components.Alert _alert { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        _account = new Account();
+
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var result = await ProtectedSessionStore.GetAsync<string>("Test");
+    }
+
+    public async Task GotoLogin()
+    {
+        Navigate.NavigateTo("Login");
+        await Task.CompletedTask;
+    }
+
+    public async Task RegisterOnClick()
+    {
+        if (
+            String.IsNullOrEmpty(_account.LoginId) ||
+            String.IsNullOrEmpty(_account.Password) ||
+            (_account.LoginId.Length < 4) ||
+            (_account.Password.Length < 4))
+        {
+            await _alert.ShowAlert("Login Id or Password is too small.", MessageType.DANGER);
+        }
+        else
+        {
+            var result = await AccountService.UpdateAccount(_account);
+            if (result.IsSuccess)
+            {
+                await _alert.ShowAlert("Updated sucessfully. Redirecting to Login Page ...", MessageType.SUCCESS, true, 4000);
+                Navigate.NavigateTo("Login");
+            }
+            else
+            {
+                await _alert.ShowAlert(result.ErrorMessage, MessageType.DANGER);
+            }
+        }
+
+        base.StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+}
