@@ -12,18 +12,10 @@ namespace Crescent.Pages.Dashboard
         public string LoginId { get; set; }
         protected override async Task OnInitializedAsync()
         {
+            await AuthHelper.Authenticate();
+            LoginId = AuthHelper.LoginId;
+            base.StateHasChanged();
             await Task.CompletedTask;            
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                await AuthHelper.Authenticate();
-                LoginId = AuthHelper.LoginId;                
-                base.StateHasChanged();
-            }
-
-        }
+        }       
     }
 }
