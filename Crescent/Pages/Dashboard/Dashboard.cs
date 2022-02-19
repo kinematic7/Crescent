@@ -20,14 +20,7 @@ namespace Crescent.Pages.Dashboard
             if (firstRender)
             {
                 await AuthHelper.Authenticate();
-                if (!AuthHelper.IsAuthenticUser)
-                {
-                    Navigate.NavigateTo("NotAuthenticUser");
-                }
-                else
-                {
-                    LoginId = AuthHelper.LoginId;
-                }
+                LoginId = AuthHelper.LoginId;                
                 base.StateHasChanged();
             }
 

@@ -8,6 +8,6 @@
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
-        AuthHelper = new AuthenticationHelper(ProtectedSessionStore, AccountService);
+        AuthHelper = new AuthenticationHelper(ProtectedSessionStore, AccountService, Navigate);
     }
 }
