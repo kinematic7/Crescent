@@ -2,14 +2,15 @@
 
 <div class="page">   
     <div class="main">        
-        <div class="top-row px-4">
-            <span style="position:absolute; font-size:17px; left:10px; padding-left:10px;">☾rescent</span>
+        <div class="top-row px-4" style="color:white; background-color:black">
+            <span style="position:absolute; font-size:21px; left:10px; padding-left:10px;">☾rescent</span>
             <span hidden="@TopMenuUility.IsHideLoginMenu">
-                <a @onclick="GotoLogin" href="#">Login</a>
-                <a @onclick="GotoRegister" href="#">Register</a>
+                <button class="btn btn-sm btn-outline-light" @onclick="GotoLogin">Login</button>
+                <button class="btn btn-sm btn-outline-light" @onclick="GotoRegister">Register</button>
             </span>
             <span hidden="@(!TopMenuUility.IsHideLoginMenu)">
-                <a @onclick="GotoLogout" href="#">Logout</a>                
+                <button class="btn btn-sm btn-outline-light" @onclick="GotoDashboard">Dashboard</button>
+                <button class="btn btn-sm btn-outline-light" @onclick="GotoLogout">Logout</button>
             </span>
         </div>
 
@@ -39,6 +40,12 @@
         TopMenuUility.IsHideLoginMenu = false;
         Navigate.NavigateTo("Login");
         base.StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    public async Task GotoDashboard()
+    {
+        Navigate.NavigateTo("Dashboard");
         await Task.CompletedTask;
     }
 
